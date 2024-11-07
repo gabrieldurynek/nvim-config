@@ -30,7 +30,8 @@ return {
                 },
             },
             window = {
-                width = 30,
+                -- width = 30,
+                position = "float",
             },
             event_handlers = {
                 {

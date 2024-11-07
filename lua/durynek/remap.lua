@@ -32,3 +32,4 @@ vim.keymap.set("n", "<leader>hp", ":Gitsigns preview_hunk<CR>", {})
 vim.keymap.set("n", "<leader>hr", ":Gitsigns reset_hunk<CR>", {})
 
 vim.keymap.set("i", "jj", "<Esc>")
+vim.keymap.set("n", "<leader>q", ":q<CR>", {})
