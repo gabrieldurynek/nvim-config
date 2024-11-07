@@ -33,8 +33,8 @@ vim.keymap.set("n", "<leader>hr", ":Gitsigns reset_hunk<CR>", {})
 
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("n", "<leader>q", ":q<CR>", {})
-vim.keymap.set("n", "<leader>w", ":w<CR>", {})
+vim.keymap.set("n", "<leader>wf", ":w<CR>", {})
 vim.keymap.set("n", "<leader>wq", ":wq<CR>", {})
 
-vim.keymap.set("n", "<leader>git", ":Git<CR>", {})
+vim.keymap.set("n", "<leader>gits", ":Git<CR>", {})
 vim.keymap.set("n", "<leader>gitc", ":Git commit<CR>", {})
