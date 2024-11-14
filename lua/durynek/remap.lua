@@ -14,7 +14,7 @@ vim.keymap.set("n", "<C-t>", "<cmd>ToggleTerm<cr>")
 vim.keymap.set("t", "<C-t>", "<cmd>ToggleTerm<cr>")
 
 -- neotree remaps
-vim.keymap.set("n", "<leader>fs", "<cmd>Neotree toggle<cr>")
+vim.keymap.set("n", "<leader>fs", "<cmd>Neotree reveal<cr>")
 
 -- navigation in insert mode
 vim.keymap.set("i", "<C-h>", "<Left>")
