@@ -38,3 +38,8 @@ vim.keymap.set("n", "<leader>wq", ":wq<CR>", {})
 
 vim.keymap.set("n", "<leader>gits", ":Git<CR>", {})
 vim.keymap.set("n", "<leader>gitc", ":Git commit<CR>", {})
+
+vim.keymap.set("n", "<leader>hh", "_", {})
+vim.keymap.set("n", "<leader>ll", "$", {})
+
+vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float)
