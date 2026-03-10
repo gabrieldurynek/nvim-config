@@ -2,11 +2,12 @@ vim.g.mapleader = " "
 
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
-vim.keymap.set("n", "<leader>fl", vim.lsp.buf.format)
+vim.keymap.set("n", "<leader>lf", function()
+    require("conform").format()
+end)
 vim.keymap.set("i", "<C-space>", vim.lsp.buf.signature_help)
 vim.keymap.set("n", "<C-space>", vim.lsp.buf.signature_help)
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action)
-vim.keymap.set("n", "<leader>gl", "<cmd>silent !golines -w %<cr>")
 
 -- terminal remaps
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
@@ -26,6 +27,13 @@ vim.keymap.set("i", "<C-i>", "<Esc>")
 vim.keymap.set("n", "<C-j>", "<cmd>m .+1<CR>==")
 vim.keymap.set("n", "<C-k>", "<cmd>m .-2<CR>==")
 
+vim.keymap.set("n", "<leader>gs", ":G<CR>", {})
+vim.keymap.set("n", "<leader>gb", ":Git blame<CR>", {})
+vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", {})
+vim.keymap.set("n", "<leader>dvo", "<cmd>DiffviewOpen<cr>", { desc = "Diffview open" })
+vim.keymap.set("n", "<leader>dvc", "<cmd>DiffviewClose<cr>", { desc = "Diffview close" })
+vim.keymap.set("n", "<leader>dvm", "<cmd>DiffviewOpen HEAD<cr>", { desc = "Diffview merge tool" })
+vim.keymap.set("n", "<leader>dvh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Diffview file history" })
 vim.keymap.set("n", "[h", ":Gitsigns prev_hunk<CR>", {})
 vim.keymap.set("n", "]h", ":Gitsigns next_hunk<CR>", {})
 vim.keymap.set("n", "<leader>hp", ":Gitsigns preview_hunk<CR>", {})
@@ -43,3 +51,6 @@ vim.keymap.set("n", "<leader>hh", "_", {})
 vim.keymap.set("n", "<leader>ll", "$", {})
 
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float)
+
+
+vim.keymap.set("n",  "<leader>rn", vim.lsp.buf.rename)

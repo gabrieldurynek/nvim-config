@@ -1,0 +1,127 @@
+return {
+    -- nvim-dap: The core Debug Adapter Protocol client
+    {
+        "mfussenegger/nvim-dap",
+        event = "VeryLazy", -- Lazy load for performance
+        dependencies = {
+            {
+                "williamboman/mason.nvim",
+                opts = function(_, opts)
+                    if type(opts.ensure_installed) == "table" then
+                        vim.list_extend(opts.ensure_installed, { "delve" })
+                    else
+                        opts.ensure_installed = { "delve" }
+                    end
+                end,
+            },
+            -- nvim-dap-ui: Provides a graphical user interface for nvim-dap
+            "rcarriga/nvim-dap-ui",
+            "nvim-neotest/nvim-nio", -- Required by nvim-dap-ui
+            -- mason-nvim-dap: Helps install debug adapters (DAP servers) easily
+            "jay-babu/mason-nvim-dap.nvim",
+            -- nvim-dap-virtual-text: Shows variable values inline as virtual text
+            "theHamsta/nvim-dap-virtual-text",
+            -- {
+            --     "leoluz/nvim-dap-go",
+            --     config = function()
+            --         require("dap-go").setup()
+            --     end,
+            -- },
+        },
+        config = function()
+            local dap = require("dap")
+            local dapui = require("dapui")
+            local mason_dap = require("mason-nvim-dap")
+            local dap_virtual_text = require("nvim-dap-virtual-text")
+            dap_virtual_text.setup({})
+            -- Initialize nvim-dap-ui
+            dapui.setup({})
+
+            -- Automatically open and close dap-ui when debugging starts/ends
+            dap.listeners.before.attach.dapui_config = function()
+                dapui.open({})
+            end
+            dap.listeners.before.launch.dapui_config = function()
+                dapui.open({})
+            end
+            dap.listeners.before.event_terminated.dapui_config = function()
+                dapui.close({})
+            end
+            dap.listeners.before.event_exited.dapui_config = function()
+                dapui.close({})
+            end
+
+            -- Configure mason-nvim-dap
+            -- This will automatically install debuggers for languages you specify.
+            mason_dap.setup({
+                ensure_installed = {
+                    "delve",
+                },
+                automatic_installation = true,
+                handlers = {
+                    delve = function() end,
+                    -- This default handler sets up configurations for most debuggers
+                    function(config)
+                        require("mason-nvim-dap").default_setup(config)
+                    end,
+                },
+            })
+
+            -- Define custom DAP configurations for languages
+            -- This is where you tell nvim-dap how to launch/attach to your programs.
+            -- This part is highly language-specific.
+            -- Define your Go configurations
+            dap.adapters.go = {
+                type = "server",
+                port = "${port}",
+                executable = {
+                    command = "dlv",
+                    args = { "dap", "-l", "127.0.0.1:${port}" },
+                },
+            }
+            dap.configurations.go = {
+                {
+                    name = "Launch Beacon Server Debug",
+                    type = "go",
+                    request = "launch",
+                    mode = "debug",
+                    program = "${workspaceFolder}/cmd/server",
+                    args = {
+                        "--metrics-addr=:8080",
+                        "--health-probe-addr=:8081",
+                        "-zap-devel",
+                    },
+                    cwd = "${workspaceFolder}",
+                    -- envFile: This is the trickiest part as nvim-dap doesn't natively
+                    -- parse .env files directly. You'll need to read it into the 'env' table.
+                    -- We'll create a helper function for this.
+                    -- env = parse_env_file("/tmp/beacon-server.env"),
+                    envFile = "/tmp/beacon-server.env",
+                },
+            }
+
+            -- Set breakpoint signs
+            vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+            vim.fn.sign_define("DapStopped", { text = "→", texthl = "DapStopped", linehl = "DapStoppedLine", numhl = "" })
+
+
+            -- debugger keymaps
+            vim.keymap.set("n", "<leader>dt", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+            vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue" })
+            vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
+            vim.keymap.set("n", "<leader>do", dap.step_out, { desc = "Step Out" })
+            vim.keymap.set("n", "<leader>dO", dap.step_over, { desc = "Step Over" })
+            vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle REPL" })
+            vim.keymap.set("n", "<leader>dL", dap.run_last, { desc = "Run Last" })
+            vim.keymap.set("n", "<leader>dB", function() dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end,
+                { desc = "Breakpoint Condition" })
+            vim.keymap.set("n", "<leader>ds", dap.session, { desc = "Session" })
+            vim.keymap.set("n", "<leader>dx", dap.terminate, { desc = "Terminate" })
+            vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle Dap UI" })
+            vim.keymap.set({ "n", "v" }, "<leader>de", dapui.eval, { desc = "Eval" })
+            vim.keymap.set('n', '<leader>dw', function()
+                require('dap').run_with(require('dap.ui.widgets').pick_configuration())
+            end, { desc = 'DAP: Pick Configuration' })
+        end,
+    },
+}

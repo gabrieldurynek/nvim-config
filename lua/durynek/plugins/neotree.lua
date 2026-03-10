@@ -19,7 +19,9 @@ return {
                     enabled = true, -- This will find and focus the file in the active buffer every time
                 },
                 filtered_items = {
+                    visible = true,
                     hide_dotfiles = false,
+                    hide_gitignored = false,
                 },
             },
             buffers = {
